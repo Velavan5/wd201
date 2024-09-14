@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Registration Form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"> </script>
+        </script>
+        <style> table, th, td { 
+            border: 2px solid white;
+            border-collapse: collapse;
+            padding: 4px;
+            margin: 4px;
+            font: bold;
+          }
+          </style>
+    </head>
+     <body class="flex  justify-center b">
+        <div class="mx-auto mt-10 p-6 bg-gray-200 rounded-lg shadow-md">
+
+        <h1 class="text-2xl font-bold text-center p-6" >Registration Form</h1>
+        <form class="mb-4" id="user-form">
+<!-- name -->
+ <div class="mb-4 flex ">
+            <label for="name" class=" w-1/4 mb-4 font-bold"> Name : </label> 
+            <input required type="text" name="name" id="name" class=" w-3/4 mb-4 rounded " placeholder="Enter you name">
+</div>
+<!-- email -->
+ <div class="mb-4 flex">
+            <label for="gmail" class="mb-4 font-bold w-1/4"> Email : </label> 
+            <input required type="email" name="email" id="email" class="mb-4 rounded w-3/4" placeholder="Enter you mail">
+</div>
+<!--password -->
+<div class="mb-4 flex">
+            <label for="password" class="mb-4 font-bold w-1/4">Password : </label>
+            <input required type="password" name="password" id="password" class="mb-4 rounded w-3/4" placeholder="Enter you password">
+</div>
+<!-- dob -->
+ <div class="mb-4 flex">
+            <label for="dob" class="mb-4 font-bold w-1/4">Date-of-birth : </label>
+            <input required type="date" name="dob" id="dob" class="mb-4 rounded w-3/4 text-sm" placeholder="Enter you Date-O-birth">
+</div>
+            
+<!-- checkbox -->  
+<div class="mb-4">        
+            <input required type="checkbox" id="checkbox" name="checkbox" value="Accepted" >
+            <label for="checkbox" class="mb-4 ">Accept Terms & Conditions</label>
+</div>
+
+<!-- button -->
+<div class="text-center">
+    <button type="submit" class="mb-4 block rounded bg-blue-500 text-white p-2">Submit</button>
+</div>
+           
+        </form>
+
+
+            <h1 class="text-2xl font-bold p-6 justify-center text-center" >Entries</h1>
+            <div id="user-entries" class="w-full  justify-center text-center"> 
+
+            </div>
+        </div>
+<script src="./registration.js"></script>
+  <script>
+    // Get today's date
+    const today = new Date();
+
+    // Calculate the date 55 years ago (earliest birthdate allowed)
+    const minDate = new Date(today.getFullYear() - 55, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+
+    // Calculate the date 18 years ago (latest birthdate allowed)
+    const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+
+    // Set the min and max attributes on the date input
+    document.getElementById('dob').setAttribute('min', minDate);
+    document.getElementById('dob').setAttribute('max', maxDate);
+</script>
+    </body>
+</html>
