@@ -1,5 +1,10 @@
+const formattedDate = (d) => {
+  return d.toISOString().split("T")[0];
+};
+
 const todoList = () => {
   let all = [];
+  const today = formattedDate(new Date());
   const add = (todoItem) => {
     all.push(todoItem);
   };
@@ -66,10 +71,6 @@ const todoList = () => {
 // ####################################### #
 
 const todos = todoList();
-
-const formattedDate = (d) => {
-  return d.toISOString().split("T")[0];
-};
 
 var dateToday = new Date(); //for accuracy while comparing - those 0's
 const today = formattedDate(dateToday);
