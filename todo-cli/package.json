@@ -5,7 +5,7 @@
   "main": "todo.js",
   "scripts": {
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install todo-cli/.husky"
   },
   "author": "velavan <gvelavan2005@gmail.com>",
   "license": "ISC",
@@ -13,7 +13,7 @@
     "@eslint/js": "^9.10.0",
     "eslint": "^9.10.0",
     "globals": "^15.9.0",
-    "husky": "^9.1.6",
+    "husky": "^8.0.0",
     "jest": "^29.7.0",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",

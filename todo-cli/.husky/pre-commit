@@ -1,2 +1,2 @@
-cd todo-cli && npm test
+cd ~/wd201/todo-cli && npm test
 npx lint-staged
