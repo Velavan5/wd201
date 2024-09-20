@@ -10,7 +10,7 @@ const password = "post";
 const sequelize = new Sequelize(database, username, password, {
   host: "localhost",
   dialect: "postgres",
-  // logging: false
+  logging: false
 });
 
 const connect = async () => {
