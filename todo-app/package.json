@@ -1,0 +1,32 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "author": "velavan <gvelavan2005@gmail.com>",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.0",
+    "pg": "^8.13.0",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.0",
+    "eslint": "^9.11.0",
+    "globals": "^15.9.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "sequelize-cli": "^6.6.2"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
+  }
+}
