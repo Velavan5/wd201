@@ -7,17 +7,24 @@ app.use(bodyParser.json());
 //rendering html pages code 
 app.set("view engine","ejs");
 app.get("/",async (request,response)=>{
-  const allTodos = await Todo.getTodos();
+  const Today_list = await Todo.dueToday();
+  const Later_list = await Todo.dueLater();
+  const Over_list = await Todo.overdue();
+
   if(request.accepts('html')){
     response.render('index',{
-      allTodos
-    });
+      Today_list,
+      Later_list,
+      Over_list
+    }
+    );
   }else {
     response.json({
-      allTodos
+      Today_list,
+      Later_list,
+      Over_list
     })
   }
-
 });
 
 // app.get("/", function (request, response) {

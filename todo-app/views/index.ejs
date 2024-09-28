@@ -3,19 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Testing</title>
+    <title>To Do App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
- td {
-    color:blueviolet;
- }
+body {
+    background-color: white;
+    font-family: sans-serif;
+}
+.Todo-item:hover .trash-icon{
+    display:block
+}
     </style>
 </head>
 <body>
-    <%- include('header.ejs') %>
-
-    <h2 style="color:brown">Todos :</h2>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <%- include('header.ejs') %>
+            <form>
+                <div class="flex gap-2 py-4">
+                    <div class="flex-auto ">
+                        <input type="text" placeholder="What's next?" required class="border border-gray text-gray-900 rounded w-full text-sm p-2 leading-5">
+                    </div>
+                    <div class="flex-auto ">
+                       <input type="date" class="border border-gray text-gray-900 rounded w-full text-sm p-2 leading-5"> 
+                    </div>
+                    <div class="flex-none">
+                        <button type="submit" class="bg-green-600 p-2 text-sm rounded leading-5">Add</button>
+                    </div>
+                </div>
+            </form>
+  
+    
+    <!-- <h2 style="color:brown">Todos :</h2> -->
     <%- include("todos.ejs") %>
 
-    <%- include("footer.ejs") %>
+    <!-- <%- // include("footer.ejs") %> -->
 </body>
 </html>

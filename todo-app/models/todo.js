@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 "use strict";
-const { Model } = require("sequelize");
+const { Model , Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -11,9 +11,48 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-static  getTodos(){
-  return  this.findAll();
-}
+
+    //functions to retrieve values from database
+    static  getTodos(){
+      return  this.findAll();
+    }
+    static async overdue() {
+      // FILL IN HERE TO RETURN OVERDUE ITEMS
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return await Todo.findAll({
+        where:{
+        dueDate:{
+          [Op.lt]:today
+        }
+      }});
+    }
+    static async dueToday() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return await Todo.findAll({
+        where:{
+          dueDate:{
+            [Op.eq]:today
+          }
+        }
+      });
+    }
+    static async dueLater() {
+      // FILL IN HERE TO RETURN ITEMS DUE LATER
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return await Todo.findAll({
+        where:{
+          dueDate:{
+            [Op.gt]:today
+          }
+        }
+      });
+    }
+
+
+    //end of retrieve functions
     static addTodo({ title, dueDate }) {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
