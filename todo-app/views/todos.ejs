@@ -1,8 +1,9 @@
 <div>
-    <h5 class="font-semibold text-gray-600 py-2" id="count-overdue">
-        Overdue
-        <span  class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Over_list.length%></span>
-    </h5>
+    <div class="flex items-center ">
+        <h5 id="count-overdue" class="font-semibold text-gray-600 py-2">Overdue</h5>
+        <span class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Over_list.length %></span>
+    </div>
+
     <ul class="list-none">
         <% for(let i=0 ;i < Over_list.length;i++) {%>
         <li class="Todo-item">
@@ -18,10 +19,10 @@
         </li>
         <%} %>
     </ul>
-    <h5 class="font-semibold text-gray-600 py-2" id="count-due-today">
-        Due Today
-        <span  class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Today_list.length%></span>
-    </h5>
+    <div class="flex items-center ">
+        <h5 id="count-due-today" class="font-semibold text-gray-600 py-2">Due Today</h5>
+        <span class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Today_list.length %></span>
+    </div>
     <ul class="list-none">
         <% for(let i=0 ;i < Today_list.length;i++) {%>
         <li class="Todo-item">
@@ -37,10 +38,10 @@
         </li>
         <%} %>
     </ul>
-    <h5 class="font-semibold text-gray-600 py-2" id="count-due-later">
-        Due Later
-        <span  class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Later_list.length%></span>
-    </h5>
+    <div class="flex items-center ">
+        <h5 id="count-due-later" class="font-semibold text-gray-600 py-2">Due Later</h5>
+        <span class="bg-gray-200 rounded py-1 px-2 ml-2 text-sm"><%= Later_list.length %></span>
+    </div>
     <ul class="list-none">
         <% for(let i=0 ;i < Later_list.length;i++) {%>
         <li class="Todo-item ">
