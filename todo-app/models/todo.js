@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
 
     //end of retrieve functions
     static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
+      return this.create({ title , dueDate , completed: false });
     }
 
     markAsCompleted() {
