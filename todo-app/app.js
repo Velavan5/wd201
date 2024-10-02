@@ -1,36 +1,44 @@
 const express = require("express");
+var csrf = require("tiny-csrf");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser")
+// middle vars
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended : false}));
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf("123456789iamasecret987654321look",["POST","PUT","DELETE"]));
 
 //rendering html pages code 
 app.set("view engine","ejs");
 app.get("/",async (request,response)=>{
-  const Today_list = await Todo.dueToday();
-  const Later_list = await Todo.dueLater();
-  const Over_list = await Todo.overdue();
+  const todos = await Todo.findAll(); //getting all todos
+  const today = new Date().toISOString().split('T')[0];
 
+  const Over_list = todos.filter(todo => !todo.completed && todo.dueDate < today); // Overdue
+  const Today_list = todos.filter(todo => !todo.completed && todo.dueDate === today); // Due Today
+  const Later_list = todos.filter(todo => !todo.completed && todo.dueDate > today); // Due Later
+  const Completed_list = todos.filter(todo => todo.completed);
+console.log(Over_list[0] );
   if(request.accepts('html')){
     response.render('index',{
       Today_list,
       Later_list,
-      Over_list
+      Over_list,
+      Completed_list,
+      csrfToken : request.csrfToken()
     }
     );
   }else {
     response.json({
       Today_list,
       Later_list,
-      Over_list
+      Over_list,
+      Completed_list
     })
   }
 });
-
-// app.get("/", function (request, response) {
-//   response.send("Hello World");
-// });
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -42,11 +50,6 @@ try{
 console.log(error);
 return response.status(500).json({ error});
 }
-
-
-  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
-  // Then, we have to respond with all Todos, like:
-  // response.send(todos)
 });
 
 app.get("/todos/:id", async function (request, response) {
@@ -77,6 +80,25 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.put("/todos/:id", async function (request, response) {
+  try {
+    // Find the todo item by its ID
+    const todo = await Todo.findByPk(request.params.id);
+
+    if (!todo) {
+      return response.status(404).json({ error: "Todo not found" });
+    }
+
+    // Update the 'completed' status from the request body
+    const updatedTodo = await todo.update({ completed: request.body.completed });
+
+    return response.json(updatedTodo);
+  } catch (error) {
+    console.error(error);
     return response.status(422).json(error);
   }
 });
