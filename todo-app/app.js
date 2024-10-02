@@ -20,7 +20,6 @@ app.get("/",async (request,response)=>{
   const Today_list = todos.filter(todo => !todo.completed && todo.dueDate === today); // Due Today
   const Later_list = todos.filter(todo => !todo.completed && todo.dueDate > today); // Due Later
   const Completed_list = todos.filter(todo => todo.completed);
-console.log(Over_list[0] );
   if(request.accepts('html')){
     response.render('index',{
       Today_list,
