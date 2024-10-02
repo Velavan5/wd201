@@ -25,7 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         dueDate:{
           [Op.lt]:today
         }
-      }});
+      },
+      order: [['id', 'ASC']]
+    });
     }
     static async dueToday() {
       const today = new Date();
@@ -35,7 +37,8 @@ module.exports = (sequelize, DataTypes) => {
           dueDate:{
             [Op.eq]:today
           }
-        }
+        },
+        order: [['id', 'ASC']]
       });
     }
     static async dueLater() {
@@ -47,7 +50,8 @@ module.exports = (sequelize, DataTypes) => {
           dueDate:{
             [Op.gt]:today
           }
-        }
+        },
+      order: [['id', 'ASC']]
       });
     }
 
@@ -60,6 +64,20 @@ module.exports = (sequelize, DataTypes) => {
     markAsCompleted() {
       return this.update({ completed: true });
     }
+
+    setCompletionStatus(value){//value - boolean
+      if (value)  return this.update({completed: true});
+      else  return this.update({completed: false});
+    }
+
+    static async remove(id){
+      return this.destroy({
+        where :{
+          id
+        }
+      });
+    }
+    
   }
   Todo.init(
     {

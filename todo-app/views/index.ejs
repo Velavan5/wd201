@@ -10,10 +10,32 @@ body {
     background-color: white;
     font-family: sans-serif;
 }
-.Todo-item:hover .trash-icon{
+.Todo-Item:hover .trash-icon{
     display:block
 }
     </style>
+    <script>
+        function updateTodo(id){
+            fetch(`/todos/${id}/setCompletionStatus`,{
+                method: "put",
+                headers: {"Content-Type" :"application/json"  }
+            })
+            .then((res)=> {
+                if(res.ok)  window.location.reload();
+            })
+            .catch((err) => console.error(err));
+        }
+        function deleteTodo(id){
+            fetch(`/todos/${id}`,{
+                method: "delete",
+                headers: {"Content-Type" :"application/json"  }
+            })
+            .then((res)=> {
+                if(res.ok)  window.location.reload();
+            })
+            .catch((err) => console.error(err));
+        }
+    </script>
 </head>
 <body>
     <div class="grid grid-cols-6">
@@ -25,7 +47,7 @@ body {
                         <input type="text"  name="title" placeholder="What's next?" required class="border border-gray text-gray-900 rounded w-full text-sm p-2 leading-5">
                     </div>
                     <div class="flex-auto ">
-                       <input type="date" name="dueDate" class="border border-gray text-gray-900 rounded w-full text-sm p-2 leading-5"> 
+                       <input type="date" name="dueDate" required class="border border-gray text-gray-900 rounded w-full text-sm p-1.5 leading-5"> 
                     </div>
                     <div class="flex-none">
                         <button type="submit" class="bg-green-600 p-2 text-sm rounded leading-5">Add</button>
@@ -33,10 +55,11 @@ body {
                 </div>
             </form>
   
-    
+    <div>
     <!-- <h2 style="color:brown">Todos :</h2> -->
-    <%- include("todos.ejs") %>
-
-    <!-- <%- // include("footer.ejs") %> -->
+    <%- include("todos.ejs",{title : "Overdue", data : Over_list}) %>
+    <%- include("todos.ejs",{title : "Due Today", data : Today_list}) %>
+    <%- include("todos.ejs",{title : "Due Later", data : Later_list}) %>
+</div>
 </body>
 </html>
