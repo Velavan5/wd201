@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <title>Sign-up form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: white;
+            font-family: sans-serif;
+        }
+        .Todo-Item:hover .trash-icon{
+            display:block
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <%- include('header.ejs') %>
+            <h6 class="py-4"> Sign-up as a new User </h6>          
+            <form action="/users" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+               <div class="py-3  ">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" class="border border-gray-300 rounded text-gray-900 w-full text-sm p-2 ">
+               </div>
+
+                <div class="py-3  "> 
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName" class="border border-gray-300 rounded text-gray-900 w-full text-sm p-2 ">
+               </div>
+
+               <div class="py-3  ">
+                <label for="email">Email:</label>
+                <input type="email" name="email" class="border border-gray-300 rounded text-gray-900 w-full text-sm p-2 ">
+               </div>
+
+               <div class="py-3  ">
+                <label for="password">Password:</label>
+                <input type="password" name="password" class="border border-gray-300 rounded text-gray-900 w-full text-sm p-2 " >
+               </div>
+
+                <div class="py-3 ">
+                    <button type="submit" class="border py-2 px-4 bg-green-600 text-white hover:bg-green-800 rounded text-medium">Sign up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
