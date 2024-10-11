@@ -21,7 +21,14 @@
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
-            <h6 class="py-4"> Sign-up as a new User </h6>          
+            <h6 class="py-4"> Sign-up as a new User </h6> 
+            <% if (messages.error) { %>
+                <ul class="bg-red-300">
+                    <% messages.error.forEach(function(message) { %>
+                    <li class="text-red-600"><%= message %></li>
+                    <% }) %>
+                </ul>
+            <% } %>         
             <form action="/users" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                <div class="py-3  ">

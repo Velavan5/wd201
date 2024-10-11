@@ -97,16 +97,44 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+ 
   Todo.init(
     {
-      title: DataTypes.STRING,
-      dueDate: DataTypes.DATEONLY,
-      completed: DataTypes.BOOLEAN,
-    },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Title cannot be null",
+          },
+          len: {
+            args: [5],
+            msg: "Title must be at least 5 characters long",
+          },
+        },
+      },
+      dueDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: "Due date cannot be null",
+          },
+          isDate: {
+            msg: "Due date must be a valid date",
+          },
+        },
+      },
+      completed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+    },  
     {
       sequelize,
       modelName: "Todo",
     }
   );
+
   return Todo;
 };

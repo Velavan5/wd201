@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
@@ -11,21 +12,22 @@ const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
-
+const flash = require("connect-flash");
+const path = require("path");
+app.set("views", path.join(__dirname, "views"));
 const saltRounds = 10;
 
 // middle vars
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser("shh! some secret string"));
-
 app.use(
   session({
     secret: "my-super-secret-key-1341345422452",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge:  60 * 60 * 1000, // 1 hours
+      maxAge: 24 * 60 * 60 * 1000, // 1 hours
     },
   })
 );
@@ -42,7 +44,11 @@ app.use(function (err, req, res, next) {
     next(err);
   }
 });
-
+app.use(flash());
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 passport.use(
   new LocalStrategy(
     {
@@ -61,7 +67,7 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid Password");
+            return done(null, false, { message: "Invalid password" });
           }
         })
         .catch((error) => {
@@ -137,77 +143,69 @@ app.get("/signout", (request, response, next) => {
   });
 });
 
-app.get("/todos/:id", async function (request, response) {
-  try {
-    const todo = await Todo.findByPk(request.params.id);
-    return response.json(todo);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     console.log("logged User: " + request.user);
-    response.redirect("/todos");
+  return response.redirect("/todos?reload=true");
   }
 );
-
-// app.post('/session', (request, response, next) => {
-//   // This ensures that the CSRF validation is done before authentication
-//   if (request.body._csrf !== request.csrfToken()) {
-//     return response.status(403).send('Invalid CSRF token');
-//   }
-//   next();
-// }, passport.authenticate('local', { failureRedirect: "/login" }), (request, response) => {
-//   console.log("logged User: " + request.user);
-//   response.redirect("/todos");
-// });
 
 app.post(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
     try {
-      await Todo.addTodo({
+      // Create a new Todo instance with title and due date
+      const todo = await Todo.addTodo({
         title: request.body.title,
         dueDate: request.body.dueDate,
         userId: request.user.id,
       });
-      return response.redirect("/todos");
-      // return response.json(todo);
+     return response.redirect("/todos");
     } catch (error) {
-      console.log(error);
-      return response.status(422).json(error);
+      // Check for Sequelize validation errors
+      if (error.name === "SequelizeValidationError") {
+        // Iterate through errors and flash messages
+        error.errors.forEach((err) => {
+          request.flash("error", err.message);
+        });
+      } else {
+        request.flash("error", "An error occurred while creating the todo.");
+      }
+     return response.redirect("/todos");// Redirect back to the todos page
     }
   }
 );
 
 app.post("/users", async (request, response) => {
-  // hash password using bcrypt
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log("\n-----\nUser created with hash: " + hashedPwd);
+  const { firstName, lastName, email, password } = request.body;
+  const hashedPwd = await bcrypt.hash(password, saltRounds);
+
   try {
     // Check if the email already exists
-    const existingUser = await User.findOne({
-      where: { email: request.body.email },
-    });
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return response
-        .status(400)
-        .send("Email is already in use. Please use a different email.");
+      request.flash(
+        "error",
+        "Email is already in use. Please use a different email."
+      );
+      return response.redirect("/signup");
     }
-    // If email doesn't exist, create a new user
-    const user = await User.create({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      email: request.body.email,
+
+    // Create the user
+    await User.create({
+      firstName,
+      lastName,
+      email,
       password: hashedPwd,
     });
-    // Log the user in after signup
+
+    // Log in the user after successful signup
     request.login(user, (err) => {
       if (err) {
         console.log(err);
@@ -216,10 +214,18 @@ app.post("/users", async (request, response) => {
       response.redirect("/todos");
     });
   } catch (error) {
-    console.error(error);
-    return response.status(500).send("Internal Server Error");
+    // Handle Sequelize validation errors
+    if (error.name === "SequelizeValidationError") {
+      error.errors.forEach((err) => request.flash("error", err.message));
+      return response.redirect("/signup");
+    }
+
+    // Handle general errors
+    request.flash("error", "An error occurred during sign-up.");
+    return response.redirect("/signup");
   }
 });
+
 
 app.put(
   "/todos/:id",
@@ -267,7 +273,7 @@ app.delete(
   async function (request, response) {
     console.log("Delete a Todo with ID: ", request.params.id);
     try {
-      await Todo.remove(request.params.id ,request.user.id);
+      await Todo.remove(request.params.id, request.user.id);
       return response.json({ success: true });
     } catch (error) {
       return response.status(422).json(error);

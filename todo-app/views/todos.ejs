@@ -16,6 +16,14 @@
         }
     </style>
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('reload')) {
+            // Remove the reload parameter from the URL
+            urlParams.delete('reload');
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            window.history.replaceState({}, document.title, newUrl); // Update the URL without reloading
+            window.location.reload(); // Reload the page
+        }
         var token = document
         .querySelector('meta[name="csrf-token"]')
         .getAttribute("content");
@@ -54,6 +62,14 @@
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
+            <% if (messages && messages.error && messages.error.length > 0) { %>
+                <ul class="bg-red-300">
+                    <% messages.error.forEach(function(message) { %>
+                    <li class="text-red-600"><%= message %></li>
+                    <% }); %>
+                </ul>
+            <% } %>
+
             <a href="/signout">Signout</a>
             <form action="/todos" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
